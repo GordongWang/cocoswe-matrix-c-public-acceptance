@@ -1,0 +1,28 @@
+name: Deployment acceptance
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  artifact:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create acceptance receipt
+        run: printf 'Deployment acceptance receipt\n' > receipt.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: deployment-acceptance
+          path: receipt.txt
+          retention-days: 1
+
+  deployment:
+    needs: artifact
+    runs-on: ubuntu-latest
+    environment: matrix-c-ci03
+    steps:
+      - name: Record approved deployment
+        run: printf 'Deployment approved\n'
